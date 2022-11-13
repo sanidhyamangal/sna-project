@@ -23,3 +23,4 @@ def plot_degree_dist(graph, plot_path:str,plot_name:str,xlim:Tuple[int]=(0,50)):
     plt.ylabel("Freq")
     plt.title(plot_name)
     plt.savefig(plot_path)
+    plt.clf()
