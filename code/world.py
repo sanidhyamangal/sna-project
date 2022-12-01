@@ -16,7 +16,7 @@ import multiprocessing
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 args = parse_args()
 
-ROOT_PATH = "PUT_YOUR_PATH_TO_HERE"
+ROOT_PATH = os.path.split(os.path.abspath(__name__))[0]
 CODE_PATH = join(ROOT_PATH, 'code')
 DATA_PATH = join(ROOT_PATH, 'data')
 BOARD_PATH = join(CODE_PATH, 'runs')
