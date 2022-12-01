@@ -55,8 +55,12 @@ def generate_model_data(dataframe: pd.DataFrame,
     user_item_train = process_dataframe(train_dataframe, item_suplier_map)
     user_item_test = process_dataframe(test_dataframe, item_suplier_map)
 
-    save_data_files(user_item_test, f"{file_dir}/user_item_test.csv")
-    save_data_files(user_item_train, f"{file_dir}/user_item_train.csv")
+    save_data_files(user_item_test,
+                    f"{file_dir}/user_item_test.csv",
+                    flat_list=True)
+    save_data_files(user_item_train,
+                    f"{file_dir}/user_item_train.csv",
+                    flat_list=True)
     save_data_files(item_suplier_map, f"{file_dir}/item_suplier_map.csv")
 
 
@@ -69,8 +73,12 @@ def process_dataframe(dataframe: pd.DataFrame, item_suplier_map: dict):
     return user_item
 
 
-def save_data_files(data_map: dict, filename: str) -> None:
+def save_data_files(data_map: dict,
+                    filename: str,
+                    flat_list: bool = False) -> None:
 
     with open(filename, "w") as fp:
         for key, val in data_map.items():
+            if flat_list:
+                val = " ".join(str(i) for i in val)
             fp.write(f"{key},{val}\n")
