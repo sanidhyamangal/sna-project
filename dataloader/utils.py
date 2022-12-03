@@ -114,6 +114,10 @@ class MF_DataReader(object):
     def allPos(self):
         return self.__all_pos
 
+    @property
+    def testDict(self):
+        return self.__testDict
+
     def all_positive(self, users):
         _all_pos = []
         for user in users:
