@@ -1,12 +1,4 @@
 
-#### Update
-
-2020-09:
-* Change the print format of each epoch
-* Add Cpp Extension in  `code/sources/`  for negative sampling. To use the extension, please install `pybind11` and `cppimport` under your environment
-
----
-
 ## LightGCN-pytorch
 
 This is the Pytorch implementation for our SIGIR 2020 paper:
@@ -40,17 +32,21 @@ see more in `dataloader.py`
 
 run LightGCN on **Gowalla** dataset:
 
-* change base directory
-
-Change `ROOT_PATH` in `code/world.py`
-
-* command
+* Gowalla command
 
 ` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="gowalla" --topks="[20]" --recdim=64`
 * Bonanza Command
 
 ` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="bonanza" --topks="[20]" --recdim=64`
 * log output
+
+## Pretrain and run Light GCN with pretrained weights for bonanza (same works for ebid)
+
+* Train with matrix factorization method
+` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="bonanza" --topks="[20]" --recdim=64 --model="mf" `
+* Train Light GCN with pretrained embeddings
+` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="bonanza" --topks="[20]" --recdim=64 --model="lgn" --pretrain=1`
+
 
 ```shell
 ...

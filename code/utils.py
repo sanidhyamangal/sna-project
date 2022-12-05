@@ -17,6 +17,8 @@ from model import PairWiseModel
 from sklearn.metrics import roc_auc_score
 import random
 import os
+import csv
+
 try:
     from cppimport import imp_from_filepath
     from os.path import join, dirname
@@ -28,6 +30,15 @@ except:
     world.cprint("Cpp extension not loaded")
     sample_ext = False
 
+def log_training_events(array, file_name: str, reset: bool = False) -> None:
+    with open(file_name, "w" if reset else "a") as fp:
+        csv.writer(fp, delimiter=",").writerow(array)
+
+def create_subfolders_if_not(path: str, dir_struct: bool = False) -> None:
+    _path = os.path.split(path)[0]
+    if dir_struct:
+        _path = path
+    os.makedirs(_path, exist_ok=True)
 
 class BPRLoss:
     def __init__(self,
@@ -109,6 +120,13 @@ def getFileName():
     if world.model_name == 'mf':
         file = f"mf-{world.dataset}-{world.config['latent_dim_rec']}.pth.tar"
     elif world.model_name == 'lgn':
+        file = f"lgn-{world.dataset}-{world.config['lightGCN_n_layers']}-{world.config['latent_dim_rec']}.pth.tar"
+    return os.path.join(world.FILE_PATH,file)
+
+def getFileName_pre(model_name):
+    if model_name == 'mf':
+        file = f"mf-{world.dataset}-{world.config['latent_dim_rec']}.pth.tar"
+    elif model_name == 'lgn':
         file = f"lgn-{world.dataset}-{world.config['lightGCN_n_layers']}-{world.config['latent_dim_rec']}.pth.tar"
     return os.path.join(world.FILE_PATH,file)
 
