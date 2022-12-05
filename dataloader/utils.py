@@ -8,7 +8,9 @@ from collections import OrderedDict, defaultdict  # for adding new ops
 from datetime import datetime
 from typing import Tuple
 
+import numpy as np
 import pandas as pd  # for dataframe based loading
+from scipy.sparse import csr_matrix
 
 
 def create_subfolders_if_not(path: str, dir_struct: bool = False) -> None:
