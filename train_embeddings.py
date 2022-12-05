@@ -4,6 +4,7 @@ github:sanidhyamangal
 """
 import numpy as np  # for np based ops
 import torch  # for torch based ops
+from sklearn.metrics import recall_score
 from torch.nn import MSELoss  # for mse loss computation
 from torch.optim import Adam  # for adam ops
 
@@ -21,7 +22,9 @@ create_subfolders_if_not(LOGGER_FILE)
 batch_size = 64
 MODEL_SAVE = "trained_model/mf.pt"
 create_subfolders_if_not(MODEL_SAVE)
-log_training_events(["Epoch", "Loss", "Accuracy"], LOGGER_FILE, reset=True)
+log_training_events(["Epoch", "Loss", "Accuracy", "Recall"],
+                    LOGGER_FILE,
+                    reset=True)
 
 datareader = MF_DataReader(train_set=DATASET + "/user_item_train.csv",
                            test_set=DATASET + "/user_item_test.csv",
@@ -50,6 +53,7 @@ for i in range(EPOCHS):
     EPOCH_LOSS.append(np.mean(_loss))
 
     model.eval()
+    true_labels, actual_preds = [], []
     for test_batch in datareader.iterator(True):
         test_pred = model(
             torch.LongTensor(test_batch['user'], device=DEVICE()),
@@ -61,12 +65,18 @@ for i in range(EPOCHS):
         correct = (test_batch['labels'].flatten() ==
                    test_pred.detach().cpu().numpy().flatten()).sum().item()
         accuracy = correct / total
+        true_labels.extend(test_batch['labels'].flatten())
+        actual_preds.extend(test_pred.detach().cpu().numpy().flatten())
         _accuracy.append(accuracy)
 
     EPOCH_ACCURACY.append(np.mean(_accuracy))
 
     logger.info(
-        f"Epoch:{i}, Loss:{EPOCH_LOSS[-1]}, Accuracy:{EPOCH_ACCURACY[-1]}")
-    log_training_events([i, EPOCH_LOSS[-1], EPOCH_ACCURACY[-1]], LOGGER_FILE)
+        f"Epoch:{i}, Loss:{EPOCH_LOSS[-1]}, Accuracy:{EPOCH_ACCURACY[-1]}, Recall: {recall_score(true_labels, actual_preds)}"
+    )
+    log_training_events([
+        i, EPOCH_LOSS[-1], EPOCH_ACCURACY[-1],
+        recall_score(true_labels, actual_preds)
+    ], LOGGER_FILE)
 
 torch.save(model, MODEL_SAVE)
