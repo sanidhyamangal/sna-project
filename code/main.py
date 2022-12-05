@@ -15,8 +15,21 @@ print(">>SEED:", world.seed)
 import register
 from register import dataset
 
-LOGGER_FILE = "logs/mf_bpr.csv"
+LOGGER_FILE = "logs/"+ world.model_name +"_bpr.csv"
 utils.create_subfolders_if_not(LOGGER_FILE)
+
+pretrain_modelname = "mf"
+weight_file = utils.getFileName_pre(pretrain_modelname) 
+if world.config['pretrain']:
+    try:
+        print('Got here')
+        pre_model = register.MODELS[pretrain_modelname](world.config, dataset)
+        pre_model.load_state_dict(torch.load(weight_file, map_location=torch.device('cpu')))
+        world.config['user_emb'] = pre_model.embedding_user.weight.data.numpy()
+        world.config['item_emb'] = pre_model.embedding_item.weight.data.numpy()
+    except FileNotFoundError:
+        print(f"{weight_file} does not exist, start from beginning")
+
 
 utils.log_training_events(["Epoch", "Loss", "Recall", "Precision", "NDCG"], LOGGER_FILE, reset=True)
 Recmodel = register.MODELS[world.model_name](world.config, dataset)

@@ -123,6 +123,13 @@ def getFileName():
         file = f"lgn-{world.dataset}-{world.config['lightGCN_n_layers']}-{world.config['latent_dim_rec']}.pth.tar"
     return os.path.join(world.FILE_PATH,file)
 
+def getFileName_pre(model_name):
+    if model_name == 'mf':
+        file = f"mf-{world.dataset}-{world.config['latent_dim_rec']}.pth.tar"
+    elif model_name == 'lgn':
+        file = f"lgn-{world.dataset}-{world.config['lightGCN_n_layers']}-{world.config['latent_dim_rec']}.pth.tar"
+    return os.path.join(world.FILE_PATH,file)
+
 def minibatch(*tensors, **kwargs):
 
     batch_size = kwargs.get('batch_size', world.config['bpr_batch_size'])
