@@ -47,6 +47,24 @@ run LightGCN on **Gowalla** dataset:
 * Train Light GCN with pretrained embeddings
 ` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="bonanza" --topks="[20]" --recdim=64 --model="lgn" --pretrain=1`
 
+* Pre-Training for the mf (non-bpr):
+``shell
+usage: Script to train Matrix Factorization pre-training [-h] [--dataset DATASET] [--batch_size BATCH_SIZE] [--latent_space LATENT_SPACE]
+                                                         [--epochs EPOCHS] [--logger_file LOGGER_FILE] [--path_to_model PATH_TO_MODEL]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --dataset DATASET     Dataset
+  --batch_size BATCH_SIZE
+                        Batch Size to train the model
+  --latent_space LATENT_SPACE
+                        Latent Space of MF model
+  --epochs EPOCHS       Epochs to run the code for
+  --logger_file LOGGER_FILE
+                        Path to save logger file
+  --path_to_model PATH_TO_MODEL
+                        Path to save model file
+```
 
 ```shell
 ...
@@ -104,4 +122,3 @@ BPR[sample time][16.9=16.60+0.45]
 | **layer=2** | 0.05988               | 0.04956 | 0.0271 |
 | **layer=3** | 0.06347          | 0.05238 | 0.0285 |
 | **layer=4** | 0.06515                | 0.05325 | 0.02917 |
-
