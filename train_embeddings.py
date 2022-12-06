@@ -88,7 +88,7 @@ def train_embeddings(dataset: str,
             recall_score(true_labels, actual_preds)
         ], LOGGER_FILE)
 
-    torch.save(model, MODEL_SAVE)
+    torch.save(model.state_dict(), MODEL_SAVE)
 
 
 if __name__ == "__main__":
@@ -114,7 +114,7 @@ if __name__ == "__main__":
                            default="logs/ebid.csv")
     argparser.add_argument("--path_to_model",
                            help="Path to save model file",
-                           default="code/checkpoints/pmf-ebid-64.pth.tar")
+                           default="code/code/checkpoints/pmf-ebid-64.pth.tar")
 
     args = argparser.parse_args()
 
