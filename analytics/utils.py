@@ -14,7 +14,7 @@ def load_dataset(file_path: str):
     df = pd.read_csv(file_path,
                      sep="::",
                      header=None,
-                     names=["buyer", "item", "seller", "timestamp"])
+                     names=["buyer", "item", "seller", "timestamp"],engine='python')
     df['timestamp'] = df['timestamp'].apply(
         lambda x: datetime.fromtimestamp(x).strftime("%Y-%m-%d"))
 

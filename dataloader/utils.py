@@ -20,10 +20,7 @@ def create_subfolders_if_not(path: str, dir_struct: bool = False) -> None:
 
 def load_dataset(file_path: str):
     # data = np.loadtxt(file_path, sep="::")
-    df = pd.read_csv(file_path,
-                     sep="::",
-                     header=None,
-                     names=["buyer", "item", "seller", "timestamp"])
+    df = pd.read_csv(file_path,sep="::",header=None,names=["buyer", "item", "seller", "timestamp"],engine='python')
     df['timestamp'] = df['timestamp'].apply(
         lambda x: datetime.fromtimestamp(x).strftime("%Y-%m-%d"))
 
