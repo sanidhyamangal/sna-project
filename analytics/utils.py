@@ -46,11 +46,11 @@ def plot_degree_dist(degrees,
                      plot_name: str,
                      xlim: Tuple[int] = (0, 50)):
     # degrees = [graph.degree(n) for n in graph.nodes()]
-
-    plt.hist(degrees, bins='auto')
-    plt.xlim(*xlim)
+    # plt.xscale('log')
+    plt.hist(degrees, bins=20, log=True)
+    # plt.xlim(*xlim)
     plt.xlabel("Degrees")
-    plt.ylabel("Freq")
+    plt.ylabel("Log-Freq")
     plt.title(plot_name)
     plt.savefig(plot_path)
     plt.clf()

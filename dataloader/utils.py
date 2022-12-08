@@ -65,18 +65,16 @@ def generate_model_data(dataframe: pd.DataFrame,
                     flat_list=True)
     save_data_files(item_suplier_map, f"{file_dir}/item_suplier_map.csv")
 
-def get_transformed_dataframe(dataframe: pd.DataFrame,
-                        file_dir: str,
-                        test_size: float = 0.2) -> None:
+def get_transformed_dataframe(dataframe: pd.DataFrame):
     item_suplier_map = dict()
-    create_subfolders_if_not(file_dir, dir_struct=True)
 
     for idx, row in dataframe.groupby(['item', 'seller'
                                        ]).size().reset_index().iterrows():
         if not item_suplier_map.get((row['item'], row['seller'])):
             item_suplier_map[(row['item'], row['seller'])] = idx
+    dataframe['pair'] = dataframe.apply(lambda row: item_suplier_map[(row['item'], row['seller'])], axis=1)
 
-    user_item = process_dataframe(dataframe, item_suplier_map)
+    return dataframe
 
 
 
