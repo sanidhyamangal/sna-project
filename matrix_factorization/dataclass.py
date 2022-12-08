@@ -64,8 +64,8 @@ class MF_DataReader(object):
         with open(filename) as f:
             for l in f.readlines():
                 if len(l) > 0:
-                    l = l.strip('\n')
-                    _items = [int(i) for i in l[1:].split()]
+                    l = l.strip('\n').split(" ")
+                    _items = [int(i) for i in l[1:]]
                     uid = int(l[0])
 
                     unique_users.append(uid)
