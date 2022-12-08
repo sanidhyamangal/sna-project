@@ -35,8 +35,8 @@ def train_embeddings(dataset: str,
                         LOGGER_FILE,
                         reset=True)
 
-    datareader = MF_DataReader(train_set=DATASET + "/train.csv",
-                               test_set=DATASET + "/test.csv",
+    datareader = MF_DataReader(train_set=DATASET + "/train.txt",
+                               test_set=DATASET + "/test.txt",
                                batch_size=batch_size)
     model = MF(datareader.n_user, datareader.m_item, latent_space).to(DEVICE())
     optimizer = Adam(model.parameters())

@@ -6,6 +6,20 @@ import numpy as np  # for np ops
 import torch  # for torch based ops
 from scipy.sparse import csr_matrix  # for csr ops
 
+try:
+    from os.path import dirname, join
+
+    from cppimport import imp_from_filepath
+
+    # path = join(os.(dirname(__file__)), "sources/sampling.cpp")
+    path = "code/sources/sampling.cpp"
+    sampling = imp_from_filepath(path)
+    sampling.seed(2022)
+    sample_ext = True
+except Exception as e:
+    print("Cpp extension not loaded" + str(e))
+    sample_ext = False
+
 
 class MF_DataReader(object):
     def __init__(self,
@@ -50,8 +64,8 @@ class MF_DataReader(object):
         with open(filename) as f:
             for l in f.readlines():
                 if len(l) > 0:
-                    l = l.strip('\n').split(",")
-                    _items = [int(i) for i in l[1].split()]
+                    l = l.strip('\n')
+                    _items = [int(i) for i in l[1:].split()]
                     uid = int(l[0])
 
                     unique_users.append(uid)
@@ -68,6 +82,12 @@ class MF_DataReader(object):
         return users, items, unique_users, dataSize
 
     def _sample(self, test: bool = False):
+        if sample_ext:
+            S = sampling.sample_negative(
+                self.n_users, self.m_items,
+                self.train_datasize if not test else self.test_datasizee,
+                self.allPos, 1)
+            return S
         users = np.random.randint(
             0, self.n_user,
             self.train_datasize if not test else self.test_datasize)
