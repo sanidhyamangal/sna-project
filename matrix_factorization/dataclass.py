@@ -11,7 +11,7 @@ try:
 
     from cppimport import imp_from_filepath
 
-    # path = join(os.(dirname(__file__)), "sources/sampling.cpp")
+    # path = join(dirname(__file__), "sources/sampling.cpp")
     path = "code/sources/sampling.cpp"
     sampling = imp_from_filepath(path)
     sampling.seed(2022)
@@ -84,7 +84,7 @@ class MF_DataReader(object):
     def _sample(self, test: bool = False):
         if sample_ext:
             S = sampling.sample_negative(
-                self.n_users, self.m_items,
+                self.n_user, self.m_item,
                 self.train_datasize if not test else self.test_datasizee,
                 self.allPos, 1)
             return S
