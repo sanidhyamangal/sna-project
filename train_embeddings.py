@@ -23,6 +23,8 @@ def train_embeddings(dataset: str,
                      latent_space: int,
                      logger_file: str,
                      path_to_save_model: int,
+                     delimeter: str,
+                     file_ext: str,
                      epochs: int = 100):
     DATASET = dataset
     EPOCHS = epochs
@@ -35,9 +37,10 @@ def train_embeddings(dataset: str,
                         LOGGER_FILE,
                         reset=True)
 
-    datareader = MF_DataReader(train_set=DATASET + "/train.txt",
-                               test_set=DATASET + "/test.txt",
-                               batch_size=batch_size)
+    datareader = MF_DataReader(train_set=DATASET + f"/train.{file_ext}",
+                               test_set=DATASET + f"/test.{file_ext}",
+                               batch_size=batch_size,
+                               delimeter=delimeter)
     model = MF(datareader.n_user, datareader.m_item, latent_space).to(DEVICE())
     optimizer = Adam(model.parameters())
     criterion = MSELoss()
@@ -115,8 +118,16 @@ if __name__ == "__main__":
     argparser.add_argument("--path_to_model",
                            help="Path to save model file",
                            default="code/code/checkpoints/pmf-ebid-64.pth.tar")
+    argparser.add_argument("--extension",
+                           help="file extension, default csv",
+                           default="csv")
+    argparser.add_argument("--delimeter",
+                           help="delimeter for seperating files",
+                           default=" ",
+                           required=False)
 
     args = argparser.parse_args()
 
     train_embeddings(args.dataset, args.batch_size, args.latent_space,
-                     args.logger_file, args.path_to_model, args.epochs)
+                     args.logger_file, args.path_to_model, args.delimeter,
+                     args.extension, args.epochs)

@@ -25,9 +25,11 @@ class MF_DataReader(object):
     def __init__(self,
                  train_set: str,
                  test_set: str,
-                 batch_size: int = 64) -> None:
+                 batch_size: int = 64,
+                 delimeter: str = ",") -> None:
         self.batch_size = batch_size
         self.n_user, self.m_item = 0, 0
+        self.delimeter = delimeter
         self.train_users, self.train_items, self.train_unique_users, self.train_datasize = self.__read_data(
             train_set)
         self.test_users, self.test_items, self.test_unique_users, self.test_datasize = self.__read_data(
@@ -64,10 +66,12 @@ class MF_DataReader(object):
         with open(filename) as f:
             for l in f.readlines():
                 if len(l) > 0:
-                    l = l.strip('\n').split(" ")
-                    _items = [int(i) for i in l[1:]]
+                    l = l.strip('\n').split(self.delimeter)
                     uid = int(l[0])
-
+                    if self.delimeter == ",":
+                        _items = [int(i) for i in l[1].split(" ")]
+                    else:
+                        _items = [int(i) for i in l[1:]]
                     unique_users.append(uid)
                     users.extend([uid] * len(_items))
                     items.extend(_items)
