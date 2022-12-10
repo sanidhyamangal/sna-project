@@ -6,14 +6,30 @@ import numpy as np  # for np ops
 import torch  # for torch based ops
 from scipy.sparse import csr_matrix  # for csr ops
 
+try:
+    from os.path import dirname, join
+
+    from cppimport import imp_from_filepath
+
+    # path = join(dirname(__file__), "sources/sampling.cpp")
+    path = "code/sources/sampling.cpp"
+    sampling = imp_from_filepath(path)
+    sampling.seed(2022)
+    sample_ext = True
+except Exception as e:
+    print("Cpp extension not loaded" + str(e))
+    sample_ext = False
+
 
 class MF_DataReader(object):
     def __init__(self,
                  train_set: str,
                  test_set: str,
-                 batch_size: int = 64) -> None:
+                 batch_size: int = 64,
+                 delimeter: str = ",") -> None:
         self.batch_size = batch_size
         self.n_user, self.m_item = 0, 0
+        self.delimeter = delimeter
         self.train_users, self.train_items, self.train_unique_users, self.train_datasize = self.__read_data(
             train_set)
         self.test_users, self.test_items, self.test_unique_users, self.test_datasize = self.__read_data(
@@ -50,10 +66,12 @@ class MF_DataReader(object):
         with open(filename) as f:
             for l in f.readlines():
                 if len(l) > 0:
-                    l = l.strip('\n').split(",")
-                    _items = [int(i) for i in l[1].split()]
+                    l = l.strip('\n').split(self.delimeter)
                     uid = int(l[0])
-
+                    if self.delimeter == ",":
+                        _items = [int(i) for i in l[1].split(" ")]
+                    else:
+                        _items = [int(i) for i in l[1:]]
                     unique_users.append(uid)
                     users.extend([uid] * len(_items))
                     items.extend(_items)
@@ -68,6 +86,12 @@ class MF_DataReader(object):
         return users, items, unique_users, dataSize
 
     def _sample(self, test: bool = False):
+        if sample_ext:
+            S = sampling.sample_negative(
+                self.n_user, self.m_item,
+                self.train_datasize if not test else self.test_datasizee,
+                self.allPos, 1)
+            return S
         users = np.random.randint(
             0, self.n_user,
             self.train_datasize if not test else self.test_datasize)
