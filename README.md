@@ -64,8 +64,11 @@ run LightGCN on datasets:
 ### Matrix Factorization with BPR Loss
 
 * Train with matrix factorization method
+
 ` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="bonanza" --topks="[20]" --recdim=64 --model="mf" --epochs=100 `
+
 * Train Light GCN with pretrained embeddings
+
 ` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="bonanza" --topks="[20]" --recdim=64 --model="lgn" --pretrain=1 --epochs=900`
 
 ### Vanilla Matrix Factorization (Non-BPR):
