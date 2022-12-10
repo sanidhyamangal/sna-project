@@ -1,20 +1,17 @@
 
-## LightGCN-pytorch
+## Social Network Analysis Project 2022: Exploring Matrix Factorization for initializing LightGCN to generate Customer-to-Customer Recommendations
 
-This is the Pytorch implementation for our SIGIR 2020 paper:
+This project is based of the the Pytorch implementation of LightGCN:
 
 >SIGIR 2020. Xiangnan He, Kuan Deng ,Xiang Wang, Yan Li, Yongdong Zhang, Meng Wang(2020). LightGCN: Simplifying and Powering Graph Convolution Network for Recommendation, [Paper in arXiv](https://arxiv.org/abs/2002.02126).
 
 Author: Prof. Xiangnan He (staff.ustc.edu.cn/~hexn/)
 
-(Also see Tensorflow [implementation](https://github.com/kuandeng/LightGCN))
+GitHub: https://github.com/gusye1234/LightGCN-PyTorch
 
 ## Introduction
 
-In this work, we aim to simplify the design of GCN to make it more concise and appropriate for recommendation. We propose a new model named LightGCN,including only the most essential component in GCN—neighborhood aggregation—for collaborative filtering
-
-First go into `world.py` and change the `ROOT_PATH` variable to the path of this directory.
-
+In this work, we aim to study the effect of intializing LightGCN with Matrix Factorization embeddings and create a recommendation system for Customer-to-Customer (C2C) Data.
 
 ## Enviroment Requirement
 
@@ -24,30 +21,54 @@ First go into `world.py` and change the `ROOT_PATH` variable to the path of this
 
 ## Dataset
 
-We provide three processed datasets: Gowalla, Yelp2018 and Amazon-book and one small dataset LastFM.
+We provide five processed datasets: 
 
-see more in `dataloader.py`
+Four Baseline from LightGCN: Gowalla, Yelp2018 Amazon-book and one small dataset LastFM.  
 
-## An example to run a 3-layer LightGCN
+Two C2C Datasets: Bonanza and Ebid
 
+### Preprocessing C2C for LightGCN and Matrix Factorization
+
+Preprocessed data is already included in the repo, but if you want to replicate our results fully to combine item and seller into (item, seller) pairs for use with the models run:
+
+`python generate_model_data.py`
+
+### Exploratory Data Analysis
+
+To create degree distribution figures for both C2C datasets run:
+
+* For raw data
+`python eda.py`
+
+* For processed data
+`python eda_transform.py`
+
+## Train LightGCN
 run LightGCN on **Gowalla** dataset:
 
 * Gowalla command
 
-` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="gowalla" --topks="[20]" --recdim=64`
+` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="gowalla" --topks="[20]" --recdim=64 --epochs=100`
 * Bonanza Command
 
-` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="bonanza" --topks="[20]" --recdim=64`
-* log output
+` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="bonanza" --topks="[20]" --recdim=64 --epochs=1000`
+
+* Ebid Command
+
+` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="ebid" --topks="[20]" --recdim=64 --epochs=1000`
+
 
 ## Pretrain and run Light GCN with pretrained weights for bonanza (same works for ebid)
 
-* Train with matrix factorization method
-` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="bonanza" --topks="[20]" --recdim=64 --model="mf" `
-* Train Light GCN with pretrained embeddings
-` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="bonanza" --topks="[20]" --recdim=64 --model="lgn" --pretrain=1`
 
-* Pre-Training for the mf (non-bpr):
+### Matrix Factorization with BPR Loss
+
+* Train with matrix factorization method
+` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="bonanza" --topks="[20]" --recdim=64 --model="mf" --epochs=100 `
+* Train Light GCN with pretrained embeddings
+` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="bonanza" --topks="[20]" --recdim=64 --model="lgn" --pretrain=1 --epochs=900`
+
+### Vanilla Matrix Factorization (Non-BPR):
 ``shell
 usage: Script to train Matrix Factorization pre-training [-h] [--dataset DATASET] [--batch_size BATCH_SIZE] [--latent_space LATENT_SPACE]
                                                          [--epochs EPOCHS] [--logger_file LOGGER_FILE] [--path_to_model PATH_TO_MODEL]
@@ -83,42 +104,3 @@ BPR[sample time][16.9=16.60+0.45]
 [TOTAL TIME] 30.99874997138977
 ...
 ```
-
-*NOTE*:
-
-1. Even though we offer the code to split user-item matrix for matrix multiplication, we strongly suggest you don't enable it since it will extremely slow down the training speed.
-2. If you feel the test process is slow, try to increase the ` testbatch` and enable `multicore`(Windows system may encounter problems with `multicore` option enabled)
-3. Use `tensorboard` option, it's good.
-4. Since we fix the seed(`--seed=2020` ) of `numpy` and `torch` in the beginning, if you run the command as we do above, you should have the exact output log despite the running time (check your output of *epoch 5* and *epoch 116*).
-
-
-## Extend:
-* If you want to run lightGCN on your own dataset, you should go to `dataloader.py`, and implement a dataloader inherited from `BasicDataset`.  Then register it in `register.py`.
-* If you want to run your own models on the datasets we offer, you should go to `model.py`, and implement a model inherited from `BasicModel`.  Then register it in `register.py`.
-* If you want to run your own sampling methods on the datasets and models we offer, you should go to `Procedure.py`, and implement a function. Then modify the corresponding code in `main.py`
-
-
-## Results
-*all metrics is under top-20*
-
-***pytorch* version results** (stop at 1000 epochs):
-
-(*for seed=2020*)
-
-* gowalla:
-
-|             | Recall | ndcg | precision |
-| ----------- | ---------------------------- | ----------------- | ---- |
-| **layer=1** | 0.1687               | 0.1417    | 0.05106 |
-| **layer=2** | 0.1786                     | 0.1524    | 0.05456 |
-| **layer=3** | 0.1824                | 0.1547 | 0.05589 |
-| **layer=4** | 0.1825                 | 0.1537       | 0.05576 |
-
-* yelp2018
-
-|             | Recall | ndcg | precision |
-| ----------- | ---------------------------- | ----------------- | ---- |
-| **layer=1** | 0.05604     | 0.04557 | 0.02519 |
-| **layer=2** | 0.05988               | 0.04956 | 0.0271 |
-| **layer=3** | 0.06347          | 0.05238 | 0.0285 |
-| **layer=4** | 0.06515                | 0.05325 | 0.02917 |
