@@ -44,7 +44,7 @@ To create degree distribution figures for both C2C datasets run:
 `python eda_transform.py`
 
 ## Train LightGCN
-run LightGCN on **Gowalla** dataset:
+run LightGCN on datasets:
 
 * Gowalla command
 
