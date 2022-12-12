@@ -21,9 +21,9 @@ In this work, we aim to study the effect of intializing LightGCN with Matrix Fac
 
 ## Dataset
 
-We provide five processed datasets: 
+We provide six processed datasets: 
 
-Four Baseline from LightGCN: Gowalla, Yelp2018 Amazon-book and one small dataset LastFM.  
+Four Baseline from LightGCN: Gowalla, Yelp2018, Amazon-book and one small dataset LastFM.  
 
 Two C2C Datasets: Bonanza and Ebid
 
