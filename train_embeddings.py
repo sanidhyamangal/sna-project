@@ -70,7 +70,7 @@ def train_embeddings(dataset: str,
         for test_batch in datareader.iterator(True):
             test_pred = model(
                 torch.LongTensor(test_batch['user']).to(device=DEVICE()),
-                torch.LongTensor(test_batch['items'].to(device=DEVICE())))
+                torch.LongTensor(test_batch['items']).to(device=DEVICE()))
             total = pred.shape[0]
             # compute the f1 score for the accuracy metric.
             test_pred[test_pred >= 0.5] = 1
