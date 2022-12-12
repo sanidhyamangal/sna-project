@@ -6,7 +6,7 @@ from argparse import ArgumentParser  # for argument parser
 
 import numpy as np  # for np based ops
 import torch  # for torch based ops
-from sklearn.metrics import recall_score
+from sklearn.metrics import precision_score, recall_score
 from torch.nn import MSELoss  # for mse loss computation
 from torch.optim import Adam  # for adam ops
 
@@ -33,7 +33,7 @@ def train_embeddings(dataset: str,
     batch_size = batch_size
     MODEL_SAVE = path_to_save_model
     create_subfolders_if_not(MODEL_SAVE)
-    log_training_events(["Epoch", "Loss", "Accuracy", "Recall"],
+    log_training_events(["Epoch", "Loss", "Accuracy", "Recall", "Precision"],
                         LOGGER_FILE,
                         reset=True)
 
@@ -53,10 +53,11 @@ def train_embeddings(dataset: str,
         model.train()
         for batch in datareader.iterator():
             optimizer.zero_grad()
-            pred = model(torch.LongTensor(batch['user'], device=DEVICE()),
-                         torch.LongTensor(batch['items'], device=DEVICE()))
+            pred = model(
+                torch.LongTensor(batch['user']).to(device=DEVICE()),
+                torch.LongTensor(batch['items']).to(device=DEVICE()))
             loss = criterion(
-                torch.FloatTensor(batch['labels'], device=DEVICE()), pred)
+                torch.FloatTensor(batch['labels']).to(device=DEVICE()), pred)
 
             _loss.append(loss.detach().cpu().item())
             loss.backward()
@@ -68,8 +69,8 @@ def train_embeddings(dataset: str,
         true_labels, actual_preds = [], []
         for test_batch in datareader.iterator(True):
             test_pred = model(
-                torch.LongTensor(test_batch['user'], device=DEVICE()),
-                torch.LongTensor(test_batch['items'], device=DEVICE()))
+                torch.LongTensor(test_batch['user']).to(device=DEVICE()),
+                torch.LongTensor(test_batch['items']).to(device=DEVICE()))
             total = pred.shape[0]
             # compute the f1 score for the accuracy metric.
             test_pred[test_pred >= 0.5] = 1
@@ -88,7 +89,8 @@ def train_embeddings(dataset: str,
         )
         log_training_events([
             i, EPOCH_LOSS[-1], EPOCH_ACCURACY[-1],
-            recall_score(true_labels, actual_preds)
+            recall_score(true_labels, actual_preds),
+            precision_score(true_labels, actual_preds)
         ], LOGGER_FILE)
 
     torch.save(model.state_dict(), MODEL_SAVE)
