@@ -21,9 +21,9 @@ In this work, we aim to study the effect of intializing LightGCN with Matrix Fac
 
 ## Dataset
 
-We provide six processed datasets: 
+We provide six processed datasets:
 
-Four Baseline from LightGCN: Gowalla, Yelp2018, Amazon-book and one small dataset LastFM.  
+Four Baseline from LightGCN: Gowalla, Yelp2018, Amazon-book and one small dataset LastFM.
 
 Two C2C Datasets: Bonanza and Ebid
 
@@ -35,7 +35,7 @@ Preprocessed data is already included in the repo, but if you want to replicate 
 
 ### Exploratory Data Analysis
 
-To create degree distribution figures for both C2C datasets run:
+To create degree distribution figures for both C2C datasets run (you might need to tweak the path for dataset if using different directory structure):
 
 * For raw data
 `python eda.py`
@@ -75,6 +75,7 @@ run LightGCN on datasets:
 ``shell
 usage: Script to train Matrix Factorization pre-training [-h] [--dataset DATASET] [--batch_size BATCH_SIZE] [--latent_space LATENT_SPACE]
                                                          [--epochs EPOCHS] [--logger_file LOGGER_FILE] [--path_to_model PATH_TO_MODEL]
+                                                         [--extension EXTENSION] [--delimeter DELIMETER]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -88,6 +89,42 @@ optional arguments:
                         Path to save logger file
   --path_to_model PATH_TO_MODEL
                         Path to save model file
+  --extension EXTENSION
+                        file extension, default csv
+  --delimeter DELIMETER
+                        delimeter for seperating files
+```
+* Train Vanilla Matrix Factorization method
+```shell
+python train_embeddings.py --dataset data/ebid --logger_file logs/ebid_mf_100.csv --path_to_model code/code/checkpoints/pmf-ebid-64.pth.tar --delimeter , --extension csv
+```
+
+* Train LGCN with Vanilla Matrix Factorization
+> You need to set `pretrain_modelname="pmf".
+```
+python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="ebid" --topks="[20]" --recdim=64 --model="lgn" --pretrain=1 --epochs 900
+```
+
+### Files and Modules
+Here are some important modules and scripts used for the project and a basic description of their usage.
+```shell
+├── analytics // code for all the analytics ops and utils
+├── code // code dir for LightGCN
+├── data // pre-processed data for the training ops
+├── dataloader // dataloader model for pre-processing
+├── eda.py // script to perform eda
+├── eda_transform.py // script to perform eda
+├── generate_model_data.py // script to pre-process dataset
+├── logger.py // logger
+├── logs // folder to store experiment logs
+├── matrix_factorization //vanilla matrix factorization module
+├── plots // folder to store and generate plots
+├── requirements.txt
+├── train_embeddings.py // script to train vanilla MF models
+├── trained_model // folder to store trained models
+└── utils.py // helper utils for the root level scripts
+
+9 directories, 7 files
 ```
 
 ```shell

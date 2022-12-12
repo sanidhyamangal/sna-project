@@ -26,6 +26,7 @@ def train_embeddings(dataset: str,
                      delimeter: str,
                      file_ext: str,
                      epochs: int = 100):
+    # define training params
     DATASET = dataset
     EPOCHS = epochs
     LOGGER_FILE = logger_file
@@ -37,16 +38,20 @@ def train_embeddings(dataset: str,
                         LOGGER_FILE,
                         reset=True)
 
+    # data loader
     datareader = MF_DataReader(train_set=DATASET + f"/train.{file_ext}",
                                test_set=DATASET + f"/test.{file_ext}",
                                batch_size=batch_size,
                                delimeter=delimeter)
+
+    # model and optimizer
     model = MF(datareader.n_user, datareader.m_item, latent_space).to(DEVICE())
     optimizer = Adam(model.parameters())
     criterion = MSELoss()
 
     EPOCH_LOSS, EPOCH_ACCURACY = [], []
 
+    # training loop
     for i in range(EPOCHS):
         _loss, _accuracy = [], []
 
@@ -97,6 +102,7 @@ def train_embeddings(dataset: str,
 
 
 if __name__ == "__main__":
+    # argparser for training the model via this script
     argparser = ArgumentParser(
         "Script to train Matrix Factorization pre-training")
     argparser.add_argument("--dataset",

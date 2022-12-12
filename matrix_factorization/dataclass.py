@@ -22,11 +22,14 @@ except Exception as e:
 
 
 class MF_DataReader(object):
+    """Data Loader class for loading data"""
     def __init__(self,
                  train_set: str,
                  test_set: str,
                  batch_size: int = 64,
                  delimeter: str = ",") -> None:
+
+        # define all the params and initialize the network
         self.batch_size = batch_size
         self.n_user, self.m_item = 0, 0
         self.delimeter = delimeter
@@ -55,12 +58,14 @@ class MF_DataReader(object):
         return self.__all_pos
 
     def all_positive(self, users):
+        """Generate all the pos pairs from feedback matrix A"""
         _all_pos = []
         for user in users:
             _all_pos.append(self.train_net[user].nonzero()[-1])
         return _all_pos
 
     def __read_data(self, filename: str):
+        """Function to read and process data into user, item pair"""
         dataSize = 0
         unique_users, users, items = [], [], []
         with open(filename) as f:
@@ -86,6 +91,7 @@ class MF_DataReader(object):
         return users, items, unique_users, dataSize
 
     def _sample(self, test: bool = False):
+        """Function to sample the data into pos and neg pair"""
         if sample_ext:
             S = sampling.sample_negative(
                 self.n_user, self.m_item,
@@ -118,6 +124,7 @@ class MF_DataReader(object):
         return np.array(S)
 
     def iterator(self, test: bool = False):
+        """Iterator to iterate the data"""
         S = self._sample(test)
 
         for i in range(S.shape[0] // self.batch_size):

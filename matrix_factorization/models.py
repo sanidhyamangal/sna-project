@@ -6,6 +6,7 @@ import torch.nn as nn  # for pytorch based ops
 
 
 class MF(nn.Module):
+    """Model for Matrix Factorization"""
     def __init__(self, users: int, items: int, latent_dim: int = 128) -> None:
         super().__init__()
         self.user_embed = nn.Embedding(users, latent_dim)

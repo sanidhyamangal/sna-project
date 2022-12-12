@@ -4,7 +4,7 @@ github:sanidhyamangal
 """
 import datetime
 
-import pandas
+import pandas as pd
 import torch  # for torch based ops
 
 
