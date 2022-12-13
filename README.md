@@ -105,7 +105,7 @@ python train_embeddings.py --dataset data/ebid --logger_file logs/ebid_mf_100.cs
 python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="ebid" --topks="[20]" --recdim=64 --model="lgn" --pretrain=1 --epochs 900
 ```
 
-### Files and Modules
+## Files and Modules
 Here are some important modules and scripts used for the project and a basic description of their usage.
 ```shell
 ├── analytics // code for all the analytics ops and utils
@@ -125,22 +125,4 @@ Here are some important modules and scripts used for the project and a basic des
 └── utils.py // helper utils for the root level scripts
 
 9 directories, 7 files
-```
-
-```shell
-...
-======================
-EPOCH[5/1000]
-BPR[sample time][16.2=15.84+0.42]
-[saved][[BPR[aver loss1.128e-01]]
-[0;30;43m[TEST][0m
-{'precision': array([0.03315359]), 'recall': array([0.10711388]), 'ndcg': array([0.08940792])}
-[TOTAL TIME] 35.9975962638855
-...
-======================
-EPOCH[116/1000]
-BPR[sample time][16.9=16.60+0.45]
-[saved][[BPR[aver loss2.056e-02]]
-[TOTAL TIME] 30.99874997138977
-...
 ```
