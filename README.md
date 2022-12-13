@@ -72,7 +72,7 @@ run LightGCN on datasets:
 ` cd code && python main.py --decay=1e-4 --lr=0.001 --layer=3 --seed=2020 --dataset="bonanza" --topks="[20]" --recdim=64 --model="lgn" --pretrain=1 --epochs=900`
 
 ### Vanilla Matrix Factorization (Non-BPR):
-``shell
+```shell
 usage: Script to train Matrix Factorization pre-training [-h] [--dataset DATASET] [--batch_size BATCH_SIZE] [--latent_space LATENT_SPACE]
                                                          [--epochs EPOCHS] [--logger_file LOGGER_FILE] [--path_to_model PATH_TO_MODEL]
                                                          [--extension EXTENSION] [--delimeter DELIMETER]
