@@ -118,7 +118,8 @@ Here are some important modules and scripts used for the project and a basic des
 ├── logger.py // logger
 ├── logs // folder to store experiment logs
 ├── matrix_factorization //vanilla matrix factorization module
-├── plots // folder to store and generate plots
+├── plots // folder to store and generate raw data plots
+├── plots_transform // folder to store and generate processed data plots
 ├── requirements.txt
 ├── train_embeddings.py // script to train vanilla MF models
 ├── trained_model // folder to store trained models
