@@ -1,15 +1,17 @@
-import world
-import dataloader
-import model
-import utils
 from pprint import pprint
 
+import model
+import world
+
+import dataloader
+import utils
+
 if world.dataset in ['gowalla', 'yelp2018', 'amazon-book']:
-    dataset = dataloader.Loader(path="../data/"+world.dataset)
+    dataset = dataloader.Loader(path="../data/" + world.dataset)
 elif world.dataset == 'lastfm':
     dataset = dataloader.LastFM()
 elif world.dataset in ['bonanza', 'ebid']:
-    dataset = dataloader.Loader(path="../data/"+world.dataset, delimiter=',')
+    dataset = dataloader.Loader(path="../data/" + world.dataset, delimiter=',')
 
 print('===========config================')
 pprint(world.config)
@@ -22,7 +24,4 @@ print("Test Topks:", world.topks)
 print("using bpr loss")
 print('===========end===================')
 
-MODELS = {
-    'mf': model.PureMF,
-    'lgn': model.LightGCN
-}
+MODELS = {'mf': model.PureMF, 'lgn': model.LightGCN, "pmf": model.MF}
